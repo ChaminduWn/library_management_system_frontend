@@ -8,17 +8,21 @@ export default async function Books() {
   const books = await res.json();
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>All Books</h1>
+    <div className="p-6 space-y-4">
+      <h1 className="text-3xl font-bold">All Books</h1>
 
-      {books.map(book => (
-        <div key={book.id} style={{ marginBottom: "20px" }}>
-          <Link href={`/books/${book.id}`}>
-            <h2>{book.title}</h2>
-          </Link>
-          <p>{book.author}</p>
-        </div>
-      ))}
+      <div className="space-y-4">
+        {books.map((book) => (
+          <div key={book.id} className="border p-4 rounded-lg shadow-sm">
+            <Link href={`/books/${book.id}`}>
+              <h2 className="text-xl font-semibold text-blue-600 hover:underline cursor-pointer">
+                {book.title}
+              </h2>
+            </Link>
+            <p className="text-gray-700">{book.author}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
