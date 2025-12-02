@@ -4,9 +4,15 @@ import { useState, useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
 
 export default function LoginPage() {
-  const { login } = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  if (!authContext) {
+    return null;
+  }
+
+  const { login } = authContext;
 
   const handleLogin = async () => {
     const response = await fetch("http://localhost:8080/api/auth/login", {
@@ -50,3 +56,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

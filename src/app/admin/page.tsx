@@ -1,12 +1,18 @@
 "use client";
 
 import { useContext, useEffect } from "react";
-import { AuthContext } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { AuthContext } from "@/context/AuthContext"; 
+import { useRouter } from "next/navigation"; 
 
 export default function AdminDashboard() {
-  const { auth } = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
   const router = useRouter();
+
+  if (!authContext) {
+    return null;
+  }
+
+  const { auth } = authContext;
 
   useEffect(() => {
     if (!auth.isLoggedIn || auth.role !== "LIBRARIAN") {
@@ -21,3 +27,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+

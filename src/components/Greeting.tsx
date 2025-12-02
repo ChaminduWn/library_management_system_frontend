@@ -2,7 +2,11 @@
 
 import React, { useState } from 'react';
 
-const Greeting = ({ initialName }) => {
+interface GreetingProps {
+  initialName: string;
+}
+
+const Greeting = ({ initialName }: GreetingProps) => {
   const [name, setName] = useState(initialName);
 
   return (
@@ -18,3 +22,4 @@ const Greeting = ({ initialName }) => {
 };
 
 export default Greeting;
+

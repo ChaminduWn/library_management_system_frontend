@@ -1,4 +1,4 @@
-export default async function BookDetails({ params }) {
+export default async function BookDetails({ params }: { params: { id: string } }) {
   const { id } = params;
 
   const res = await fetch(`http://localhost:8080/api/books/${id}`, {
@@ -26,3 +26,4 @@ export default async function BookDetails({ params }) {
     </div>
   );
 }
+
