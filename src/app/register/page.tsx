@@ -23,54 +23,55 @@ export default function SignupPage() {
 
     if (response.ok) {
       alert("Registered successfully! Please login.");
-      window.location.href = "/login"; // redirect to login page
+      window.location.href = "/login";
     } else {
       alert(data || "Registration failed");
     }
   };
 
   return (
-    <div className="max-w-md p-6 mx-auto mt-20 space-y-4 border rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold">Register</h1>
+    <div className="max-w-md p-8 mx-auto mt-20 bg-white border border-gray-200 shadow-lg rounded-xl">
+      <h1 className="mb-6 text-3xl font-bold text-center">Create Account</h1>
 
-      <input
-        className="w-full p-2 border rounded"
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+      <div className="space-y-4">
+        <input
+          className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+          type="email"
+          placeholder="Email Address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-      <input
-        className="w-full p-2 border rounded"
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <input
+          className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-      <input
-        className="w-full p-2 border rounded"
-        type="password"
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-      />
+        <input
+          className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+          type="password"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
 
-      <button
-        onClick={handleSignup}
-        className="w-full p-2 text-white bg-green-600 rounded"
-      >
-        Register
-      </button>
+        <button
+          onClick={handleSignup}
+          className="w-full p-3 font-semibold text-white transition bg-green-600 rounded-lg hover:bg-green-700"
+        >
+          Register
+        </button>
+      </div>
 
-      <p className="mt-2 text-sm text-center">
+      <p className="mt-4 text-sm text-center">
         Already have an account?{" "}
-        <a href="/login" className="text-blue-600 hover:underline">
+        <a href="/login" className="font-medium text-blue-600 hover:underline">
           Login
         </a>
       </p>
     </div>
   );
 }
-
