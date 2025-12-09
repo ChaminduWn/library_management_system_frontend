@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 interface User {
   id: number;
@@ -11,20 +12,15 @@ interface User {
   createdAt: string;
 }
 
-interface ProfileProps {
-  auth: {
-    token: string | null;
-    role: string | null;
-    isLoggedIn: boolean;
-  };
-}
-
-export default function UserProfile({ auth }: ProfileProps) {
+export default function UserProfile() {
   const router = useRouter();
+  const { auth } = useAuth(); // ✅ get auth from context
+
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'activity'>('profile');
+  const [activeTab, setActiveTab] =
+    useState<'profile' | 'security' | 'activity'>('profile');
 
   // Password change state
   const [oldPassword, setOldPassword] = useState('');
@@ -32,20 +28,18 @@ export default function UserProfile({ auth }: ProfileProps) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
 
-  useEffect(() => {
-    if (!auth.isLoggedIn) {
-      router.push('/login');
-      return;
-    }
-    fetchUserProfile();
-  }, [auth.isLoggedIn, router]);
-
   const fetchUserProfile = async () => {
     try {
+      if (!auth.token) {
+        setError('Not authenticated');
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch('http://localhost:8080/api/users', {
         headers: {
-          'Authorization': `Bearer ${auth.token}`
-        }
+          Authorization: `Bearer ${auth.token}`,
+        },
       });
 
       if (!response.ok) throw new Error('Failed to fetch profile');
@@ -60,12 +54,23 @@ export default function UserProfile({ auth }: ProfileProps) {
         setError('User not found');
       }
     } catch (err) {
-      setError('Failed to load profile');
       console.error(err);
+      setError('Failed to load profile');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // If not logged in, redirect to login
+    if (!auth.isLoggedIn) {
+      router.push('/login');
+      return;
+    }
+
+    fetchUserProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth.isLoggedIn, router]);
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,8 +87,10 @@ export default function UserProfile({ auth }: ProfileProps) {
     }
 
     // TODO: Implement actual password change API call
-    setPasswordMessage('Password change functionality needs backend implementation');
-    
+    setPasswordMessage(
+      'Password change functionality needs backend implementation'
+    );
+
     // Clear form
     setOldPassword('');
     setNewPassword('');
@@ -107,7 +114,7 @@ export default function UserProfile({ auth }: ProfileProps) {
         <div className="p-8 text-center bg-white rounded-lg shadow-md">
           <div className="mb-4 text-5xl text-red-500">⚠️</div>
           <h2 className="mb-2 text-2xl font-bold text-gray-800">Error</h2>
-          <p className="mb-4 text-gray-600">{error}</p>
+          <p className="mb-4 text-gray-600">{error || 'User not found'}</p>
           <button
             onClick={() => router.push('/books')}
             className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
@@ -126,18 +133,30 @@ export default function UserProfile({ auth }: ProfileProps) {
         <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
           <div className="flex items-center space-x-6">
             <div className="p-6 bg-blue-100 rounded-full">
-              <svg className="w-20 h-20 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              <svg
+                className="w-20 h-20 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
               </svg>
             </div>
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-gray-800">{user.email}</h1>
               <div className="flex items-center mt-2 space-x-4">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  user.role === 'LIBRARIAN' 
-                    ? 'bg-purple-100 text-purple-800' 
-                    : 'bg-green-100 text-green-800'
-                }`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    user.role === 'LIBRARIAN'
+                      ? 'bg-purple-100 text-purple-800'
+                      : 'bg-green-100 text-green-800'
+                  }`}
+                >
                   {user.role === 'LIBRARIAN' ? '👨‍💼 Librarian' : '👤 Member'}
                 </span>
                 {user.isBlacklisted && (
@@ -193,7 +212,9 @@ export default function UserProfile({ auth }: ProfileProps) {
             {activeTab === 'profile' && (
               <div className="space-y-6">
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">Email Address</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
+                    Email Address
+                  </label>
                   <input
                     type="email"
                     value={user.email}
@@ -203,7 +224,9 @@ export default function UserProfile({ auth }: ProfileProps) {
                 </div>
 
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">Account Type</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
+                    Account Type
+                  </label>
                   <input
                     type="text"
                     value={user.role}
@@ -213,19 +236,25 @@ export default function UserProfile({ auth }: ProfileProps) {
                 </div>
 
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">Account Status</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
+                    Account Status
+                  </label>
                   <input
                     type="text"
                     value={user.isBlacklisted ? 'Blacklisted' : 'Active'}
                     disabled
                     className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${
-                      user.isBlacklisted ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'
+                      user.isBlacklisted
+                        ? 'bg-red-50 text-red-600'
+                        : 'bg-green-50 text-green-600'
                     }`}
                   />
                 </div>
 
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">Member Since</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
+                    Member Since
+                  </label>
                   <input
                     type="text"
                     value={new Date(user.createdAt).toLocaleString()}
@@ -239,7 +268,9 @@ export default function UserProfile({ auth }: ProfileProps) {
             {/* Security Tab */}
             {activeTab === 'security' && (
               <div>
-                <h3 className="mb-4 text-lg font-semibold text-gray-800">Change Password</h3>
+                <h3 className="mb-4 text-lg font-semibold text-gray-800">
+                  Change Password
+                </h3>
                 <form onSubmit={handlePasswordChange} className="space-y-4">
                   <div>
                     <label className="block mb-2 text-sm font-medium text-gray-700">
@@ -281,11 +312,13 @@ export default function UserProfile({ auth }: ProfileProps) {
                   </div>
 
                   {passwordMessage && (
-                    <div className={`p-3 rounded-lg ${
-                      passwordMessage.includes('success') 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-yellow-100 text-yellow-800'
-                    }`}>
+                    <div
+                      className={`p-3 rounded-lg ${
+                        passwordMessage.includes('success')
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}
+                    >
                       {passwordMessage}
                     </div>
                   )}
@@ -303,19 +336,33 @@ export default function UserProfile({ auth }: ProfileProps) {
             {/* Activity Tab */}
             {activeTab === 'activity' && (
               <div>
-                <h3 className="mb-4 text-lg font-semibold text-gray-800">Account Activity</h3>
+                <h3 className="mb-4 text-lg font-semibold text-gray-800">
+                  Account Activity
+                </h3>
                 <div className="space-y-4">
                   <div className="p-4 rounded-lg bg-gray-50">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium text-gray-800">Account Created</p>
+                        <p className="font-medium text-gray-800">
+                          Account Created
+                        </p>
                         <p className="text-sm text-gray-600">
                           {new Date(user.createdAt).toLocaleString()}
                         </p>
                       </div>
                       <div className="text-green-500">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg
+                          className="w-6 h-6"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                       </div>
                     </div>
@@ -323,7 +370,8 @@ export default function UserProfile({ auth }: ProfileProps) {
 
                   <div className="p-4 rounded-lg bg-gray-50">
                     <p className="text-center text-gray-600">
-                      📚 Borrowing history and activity logs will be displayed here
+                      📚 Borrowing history and activity logs will be displayed
+                      here
                     </p>
                   </div>
                 </div>
