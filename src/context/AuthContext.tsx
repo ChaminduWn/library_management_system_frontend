@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
 interface AuthState {
@@ -15,6 +15,15 @@ interface AuthContextType {
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// ✅ ADD THIS HOOK - This was missing!
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -52,7 +61,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     // Redirect based on role
     if (role === "LIBRARIAN") router.push("/admin"); 
-    else router.push("/");
+    else router.push("/books"); // ✅ Changed from "/" to "/books" for better UX
   };
 
   // LOGOUT FUNCTION
@@ -72,4 +81,3 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     </AuthContext.Provider>
   );
 }
-

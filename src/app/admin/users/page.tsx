@@ -60,7 +60,6 @@ export default function UserManagement() {
       toast({
         title: "Error",
         description: (err as Error).message,
-        variant: "destructive",
       });
     }
   };
@@ -87,7 +86,6 @@ export default function UserManagement() {
       toast({
         title: "Error",
         description: (err as Error).message,
-        variant: "destructive",
       });
     }
   };
@@ -123,7 +121,6 @@ export default function UserManagement() {
       toast({
         title: "Error",
         description: (err as Error).message,
-        variant: "destructive",
       });
     }
   };
