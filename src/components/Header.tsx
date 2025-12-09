@@ -42,22 +42,44 @@ export default function Header() {
                 Books
               </button>
               
+              
               {auth.role === 'LIBRARIAN' && (
                 <>
                   <button
                     onClick={() => router.push('/admin')}
                     className="font-medium transition-colors hover:text-blue-200"
                   >
-                    Manage Books
+                     Dashboard
+                  </button>
+
+                   <button
+                    onClick={() => router.push('/admin/books')}
+                    className="font-medium transition-colors hover:text-blue-200"
+                  >
+                    Books
+                  </button>
+
+                  <button
+                    onClick={() => router.push('/admin/categories')}
+                    className="font-medium transition-colors hover:text-blue-200"
+                  >
+                    Category
                   </button>
                   <button
                     onClick={() => router.push('/admin/users')}
                     className="font-medium transition-colors hover:text-blue-200"
                   >
-                    Manage Users
+                    Users
                   </button>
                 </>
               )}
+
+              <button
+                onClick={() => router.push('/about')}
+                className="font-medium transition-colors hover:text-blue-200"
+              >
+                About
+              </button>
               
               <button
                 onClick={() => router.push('/profile')}
