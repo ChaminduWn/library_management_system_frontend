@@ -1,13 +1,25 @@
 "use client";
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
-export const AuthContext = createContext();
+interface AuthState {
+  token: string | null;
+  role: string | null;
+  isLoggedIn: boolean;
+}
 
-export default function AuthProvider({ children }) {
+interface AuthContextType {
+  auth: AuthState;
+  login: (token: string, role: string) => void;
+  logout: () => void;
+}
+
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export default function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
-  const [auth, setAuth] = useState({
+  const [auth, setAuth] = useState<AuthState>({
     token: null,
     role: null,      // "LIBRARIAN" or "USER"
     isLoggedIn: false,
@@ -28,7 +40,7 @@ export default function AuthProvider({ children }) {
   }, []);
 
   // LOGIN FUNCTION
-  const login = (token, role) => {
+  const login = (token: string, role: string) => {
     localStorage.setItem("token", token);
     localStorage.setItem("role", role);
 
@@ -60,3 +72,4 @@ export default function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
