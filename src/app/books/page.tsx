@@ -108,9 +108,23 @@ export default function UserBookDiscovery() {
     return filters.category || filters.author || filters.genre || filters.language;
   };
 
-  // Handle multiple possible image URL formats
+  // Handle multiple possible image URL formats and prepend base URL if needed
   const getBookImage = (book: Book) => {
-    return book.imageUrl || book.image_url || null;
+    const imageUrl = book.imageUrl || book.image_url;
+    if (!imageUrl) return null;
+    
+    // If URL starts with /images/, prepend the backend URL
+    if (imageUrl.startsWith('/images/')) {
+      return `http://localhost:8080${imageUrl}`;
+    }
+    
+    // If it's already a full URL, return as is
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    
+    // Otherwise, assume it's a relative path and prepend backend URL
+    return `http://localhost:8080/${imageUrl}`;
   };
 
   return (
