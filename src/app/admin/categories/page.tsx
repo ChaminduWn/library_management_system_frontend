@@ -41,7 +41,7 @@ export default function CategoryManagement() {
   }, [auth, router]);
 
   const fetchCategories = async () => {
-    const res = await fetch("http://localhost:8081/api/categories", {
+    const res = await fetch("http://localhost:8080/api/categories", {
       headers: { Authorization: `Bearer ${auth.token}` },
     });
     const data = await res.json();
@@ -49,7 +49,7 @@ export default function CategoryManagement() {
   };
 
   const onSubmit = async (data: CategoryForm) => {
-    const url = editingCategory ? `http://localhost:8081/api/categories/${editingCategory.id}` : "http://localhost:8081/api/categories";
+    const url = editingCategory ? `http://localhost:8080/api/categories/${editingCategory.id}` : "http://localhost:8080/api/categories";
     const method = editingCategory ? "PUT" : "POST";
     await fetch(url, {
       method,
@@ -63,7 +63,7 @@ export default function CategoryManagement() {
   };
 
   const deleteCategory = async (id: number) => {
-    await fetch(`http://localhost:8081/api/categories/${id}`, {
+    await fetch(`http://localhost:8080/api/categories/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${auth.token}` },
     });
