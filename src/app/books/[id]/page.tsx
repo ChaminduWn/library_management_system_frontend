@@ -52,11 +52,33 @@ export default function BookDetailsPage({ params }: { params: Promise<{ id: stri
     setError("");
 
     try {
-      // Get JWT token from localStorage or your auth context
+      // Get JWT token from localStorage
       const token = localStorage.getItem("token");
       
       if (!token) {
         setError("Please login to reserve a book");
+        setReserving(false);
+        // Optionally redirect to login
+        // router.push('/login');
+        return;
+      }
+
+      // Decode JWT to get user ID (simple base64 decode)
+      let userId: number | null = null;
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        userId = payload.userId || payload.id || payload.sub;
+        console.log("Decoded user ID:", userId);
+        console.log("Full token payload:", payload);
+      } catch (e) {
+        console.error("Failed to decode token:", e);
+        setError("Invalid authentication token. Please login again.");
+        setReserving(false);
+        return;
+      }
+
+      if (!userId) {
+        setError("User ID not found. Please login again.");
         setReserving(false);
         return;
       }
@@ -67,17 +89,16 @@ export default function BookDetailsPage({ params }: { params: Promise<{ id: stri
       dueDate.setDate(dueDate.getDate() + days);
       const dueDateStr = dueDate.toISOString().split('T')[0];
 
-      // Get user ID from token (you may need to decode JWT or get from context)
-      // For now, assuming you have a way to get userId
-      const userId = localStorage.getItem("userId"); // Adjust based on your auth implementation
-
       const reservationData = {
-        userId: parseInt(userId || "1"), // Replace with actual user ID
+        userId: userId,
         bookId: book?.id,
         reservationDate: reservationDate,
         dueDate: dueDateStr,
         status: "ACTIVE"
       };
+
+      console.log("Sending reservation:", reservationData);
+      console.log("Token:", token);
 
       const res = await fetch("http://localhost:8080/api/reservations", {
         method: "POST",
@@ -87,6 +108,8 @@ export default function BookDetailsPage({ params }: { params: Promise<{ id: stri
         },
         body: JSON.stringify(reservationData)
       });
+
+      console.log("Response status:", res.status);
 
       if (res.ok) {
         setReservationSuccess(true);
@@ -100,9 +123,18 @@ export default function BookDetailsPage({ params }: { params: Promise<{ id: stri
         }, 3000);
       } else {
         const errorData = await res.text();
-        setError(errorData || "Failed to reserve book");
+        console.error("Reservation error:", errorData);
+        
+        if (res.status === 403) {
+          setError("Access denied. Please make sure you're logged in as a regular user.");
+        } else if (res.status === 401) {
+          setError("Your session has expired. Please login again.");
+        } else {
+          setError(errorData || "Failed to reserve book");
+        }
       }
     } catch (err) {
+      console.error("Reservation error:", err);
       setError("Error processing reservation");
     } finally {
       setReserving(false);

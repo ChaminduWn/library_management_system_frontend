@@ -54,6 +54,9 @@ export default function Header() {
         { label: 'Books Management', path: '/admin/books', icon: BookMarked },
         { label: 'Categories', path: '/admin/categories', icon: FolderOpen },
         { label: 'Users', path: '/admin/users', icon: Users },
+        { label: 'Reservations', path: '/admin/reservation', icon: BookOpen },
+
+        
       ]
     : [
         { label: 'Books', path: '/books', icon: BookOpen },
