@@ -129,33 +129,41 @@ export default function UserBookDiscovery() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Header */}
-      <div className="bg-white border-b shadow-sm">
-        <div className="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-600 rounded-lg">
-                <BookOpen className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Book Library</h1>
-                <p className="mt-1 text-sm text-gray-600">
-                  Discover your next great read
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center px-4 py-2 space-x-2 transition-colors bg-gray-100 rounded-lg hover:bg-gray-200"
-            >
-              <Filter className="w-4 h-4" />
-              <span className="text-sm font-medium">
-                {showFilters ? "Hide" : "Show"} Filters
-              </span>
-            </button>
-          </div>
+     {/* Header */}
+<div className="border-b shadow-md bg-gradient-to-r from-blue-600 to-blue-700">
+  <div className="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <div className="flex items-center justify-between">
+
+      {/* Left Section */}
+      <div className="flex items-center space-x-4">
+        <div className="p-3 shadow-sm bg-blue-500/30 backdrop-blur-sm rounded-xl">
+          <BookOpen className="text-white w-7 h-7" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold tracking-wide text-white">
+            Book Library
+          </h1>
+          <p className="mt-1 text-sm text-blue-100">
+            Discover your next great read
+          </p>
         </div>
       </div>
+
+      {/* Right Section (Filter Button) */}
+      <button
+        onClick={() => setShowFilters(!showFilters)}
+        className="flex items-center px-4 py-2 space-x-2 transition-all duration-200 border rounded-lg shadow-sm bg-white/90 border-white/40 hover:bg-white hover:shadow-md"
+      >
+        <Filter className="w-4 h-4 text-blue-700" />
+        <span className="text-sm font-medium text-blue-700">
+          {showFilters ? "Hide" : "Show"} Filters
+        </span>
+      </button>
+
+    </div>
+  </div>
+</div>
+
 
       <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
         {/* Filters Section */}

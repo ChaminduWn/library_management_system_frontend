@@ -305,21 +305,27 @@ export default function AdminReservationsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header */}
-      <div className="bg-white border-b shadow-sm">
-        <div className="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-blue-600 rounded-lg">
-              <Calendar className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Reservation Management</h1>
-              <p className="mt-1 text-sm text-gray-600">
-                Monitor and manage all book reservations
-              </p>
-            </div>
-          </div>
-        </div>
+      <div className="border-b shadow-md bg-gradient-to-r from-blue-600 to-blue-700">
+  <div className="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <div className="flex items-center space-x-4">
+      {/* Icon */}
+      <div className="p-3 shadow-sm bg-blue-500/30 backdrop-blur-sm rounded-xl">
+        <Calendar className="text-white w-7 h-7" />
       </div>
+
+      {/* Text */}
+      <div>
+        <h1 className="text-3xl font-bold tracking-wide text-white">
+          Reservation Management
+        </h1>
+        <p className="mt-1 text-sm text-blue-100">
+          Monitor and manage all book reservations
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
 
       <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
         {/* Stats Cards */}

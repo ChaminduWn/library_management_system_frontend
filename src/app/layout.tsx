@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <Header />
             
             {/* Main content area - your pages go here */}
-            <main className="flex-grow">
+            <main className="flex-grow pt-16">
               {children}
             </main>
             
